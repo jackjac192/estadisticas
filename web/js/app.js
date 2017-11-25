@@ -121,6 +121,7 @@ $(function()
 					if(ev.currentTarget.id == "btnIF"){
 						ev.preventDefault();
 						cerrarInforme = true;
+						console.log(cerrarInforme);
 					}
 					
 					var controladorAccion = $('#id_accion').val();

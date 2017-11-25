@@ -7,15 +7,18 @@ use Model\ValoracionModel as Valoracion;
 use Model\PeriodosModel as Periodos;
 use Helpers\GenerarPuestos as PuestosPromedios;
 use Helpers\Calcular as Calcular;
+use Model\CerrarInformeModel as CerrarInforme;
 
 
 class ConsolidadoController{
 	private $puestosPromedios_obj;
+	private $cerrarInforme_obj;
 
 	function __construct(){
 		$db = $_SESSION['db'];
 		$this->_calcular = new Calcular($db);
 		$this->puestosPromedios_obj = new PuestosPromedios($db);
+		$this->cerrarInforme_obj = new CerrarInforme($db);
 	}
 
 
@@ -144,9 +147,18 @@ class ConsolidadoController{
 		$array_listado_estudiantes_asignatura_periodos = $this->_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
 		$array_estudiantes_acumulados_asignaturas = $this->_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
 		$array_estudiantes_requeridas_asignaturas = $this->_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
+		var_dump($cerrarInforme);
 
-		
+		if($cerrarInforme){
 
+			$this->cerrarInforme_obj->setArrayInforme(
+				[
+					'array_estudiantes_acumulados_asignaturas' =>$array_estudiantes_acumulados_asignaturas,
+					'array_puesto_promedio_acumulado' =>$array_puesto_promedio_acumulado, 
+					'id_grupo' => $grupo
+				]
+			);
+		}
 
 		header("Access-Control-Allow-Origin: *");
 		$view = new View(
@@ -180,7 +192,7 @@ class ConsolidadoController{
 
 		$view->execute();
 
-		$_POST['data']=null;	
+		
 
 
 	}
