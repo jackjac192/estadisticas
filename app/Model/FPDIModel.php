@@ -19,16 +19,16 @@ class FPDIModel extends FPDI
       foreach ($infoStudents as $estudiante) {
 
       $this->setSourceFile('template-pdf/ficha.pdf');
-  		$pageId = $this->importPage(1);
-  		$this->addPage('P','Letter');
-  		$this->useTemplate($pageId,null, null, null, null, true);
+            $pageId = $this->importPage(1);
+            $this->addPage('P','Letter');
+            $this->useTemplate($pageId,null, null, null, null, true);
 
       $this->SetFillColor(255,255,255);
       $this->SetTextColor(0);
       $this->SetDrawColor(0,0,0);
       $this->SetLineWidth(.1);
-  		$this->SetFont('Arial','B', 12);
-   		$this->SetTextColor(0,0,0);
+            $this->SetFont('Arial','B', 12);
+            $this->SetTextColor(0,0,0);
       # Logo y nombre de la institución
       if($informacionGrupo['logo_byte'] != NULL){
           $pic = 'data:image/png;base64,'.base64_encode($informacionGrupo["logo_byte"]);
@@ -41,7 +41,7 @@ class FPDIModel extends FPDI
       date_default_timezone_set('UTC');
 
       # Sesion formato de matricula de estudiante
-   		$this->Cell(119.5,8,"",$lineas,0,'C');
+            $this->Cell(119.5,8,"",$lineas,0,'C');
       if(1==0){
         //Nuevo
         $this->Cell(39.5,8,"X",$lineas,0,'C');

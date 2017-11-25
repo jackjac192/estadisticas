@@ -121,7 +121,7 @@ $(function()
 					if(ev.currentTarget.id == "btnIF"){
 						ev.preventDefault();
 						cerrarInforme = true;
-						console.log(cerrarInforme);
+						
 					}
 					
 					var controladorAccion = $('#id_accion').val();
@@ -162,6 +162,7 @@ $(function()
 					var data = 'grupo='+idGrupo+'&periodo='+idPeriodo+'&area='+area+'&reprobados='+
 					reprobados+'&academicas='+academicas+'&numero='+numero+'&operador='+operador+'&jornada='+
 					jornada+'&ano='+ano+'&per_acumulados='+periodos_acumulados+'&informe='+informe+'&cerrarInforme='+cerrarInforme;
+					console.log(cerrarInforme);
 							//console.log(idPeriodo);
 
 							$.ajax({
@@ -239,7 +240,7 @@ $(function()
 								}
 							});
 
-						}//Fin función getTablaEstadisticas
+						}//Fin fnción getTablaEstadisticas
 
 
 

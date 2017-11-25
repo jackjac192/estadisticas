@@ -181,7 +181,7 @@ class Calcular
 
 
 	public function getArrayPuestoPromedioAcumulado(){
-		if(isset($this->array_promedios_acumulados)){
+		if($this->array_promedios_acumulados){			
 			return $this->obj_generar_puestos->obtenerPromedios($this->array_promedios_acumulados);
 		}
 		return false;

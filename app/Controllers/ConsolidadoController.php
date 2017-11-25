@@ -23,9 +23,9 @@ class ConsolidadoController{
 
 
 	public function getConsolidadoAction($db){		
-
+		
 		$area = $_POST['area'];	
-		$cerrarInforme = $_POST['cerrarInforme'];
+		$cerrar = $_POST['cerrarInforme'];
 		$grupo = $_POST['grupo'];
 		$puestoPromedio = array();
 		$periodo = $_POST['periodo'];		
@@ -149,8 +149,8 @@ class ConsolidadoController{
 		$array_estudiantes_requeridas_asignaturas = $this->_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
 		
 
-		if($cerrarInforme){
-
+		if($cerrar == "true"){
+			
 			$this->cerrarInforme_obj->setArrayInforme(
 				[
 					'array_estudiantes_acumulados_asignaturas' =>$array_estudiantes_acumulados_asignaturas,
