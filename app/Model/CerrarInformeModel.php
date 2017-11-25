@@ -10,7 +10,6 @@ class CerrarInformeModel extends BD{
 	private $id_grupo;
 	private $ano_lectivo;
 
-
 	function __construct($bd){	
 
 		$this->database=$bd;
@@ -35,15 +34,12 @@ class CerrarInformeModel extends BD{
 	public function insertarPromediosEstudiantes()
 
 	{	
-
 		foreach ($this->array_promedios_estudiantes as $key_id_estudiante => $estudiante_) {
 			$this->query = " INSERT INTO informe_final_general ( id_estudiante, id_grupo, promedio, puesto, ano_lectivo, promovido)
 			VALUES ('$key_id_estudiante', '$this->id_grupo', '$estudiante_[pgg]', '$estudiante_[puesto]', '$this->ano_lectivo','')
 			";
 			$this->execute_single_query();
-		}		
-
-		
+		}				
 	}
 
 	public function getIdInforme($id_estudiante, $id_grupo)

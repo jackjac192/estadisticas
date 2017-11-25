@@ -83,9 +83,7 @@ class Calcular
 		$this->cantidad_periodos_faltantes_ = (count($array_periodos) - (count($array_periodos_evaluados)-1));
 		$this->array_periodo_proximo = $this->cantidad_periodos_faltantes==0?[]:$array_periodos[count($array_periodos_evaluados)] ;
 		$this->porcentaje_periodo_prox = $this->cantidad_periodos_faltantes==0?[]:$array_periodos[count($array_periodos_evaluados)]['peso'];
-		$this->porcentaje_periodo_prox_ = $array_periodos[count($array_periodos_evaluados)-1]['peso'];
-
-		print_r($this->array_periodo_proximo);
+		$this->porcentaje_periodo_prox_ = $array_periodos[count($array_periodos_evaluados)-1]['peso'];		
 
 		$this->array_porcentajes_periodos = $array_porcentajes_periodos;
 		$this->array_datos_estudiantes_periodos = $array_datos_estudiantes_periodos;

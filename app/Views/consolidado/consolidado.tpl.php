@@ -31,9 +31,11 @@ $getTextformatoRequereridasAsignatura = function ($valoracion_requerida)use(
 
 ?>
 
-
+<div id="preload">
+	
+</div>
 <div id="contentConsol" class="content-tabla-grupo">	
-	<table id="table_id"  data-pos="<?php echo $info['id_grupo'] ?>" class="cell-border">
+	<table id="table_id"  class="cell-border">
 		<thead>
 			<tr id="fila-asignaturas">
 				<th>No.</th>

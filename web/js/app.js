@@ -167,7 +167,14 @@ $(function()
 							$.ajax({
 								method: "POST",
 								url: url+controladorAccion+baseDatos,
-								data: data
+								data: data,
+								beforeSend: function(xhr){
+									var $img = $("<img class=loader-img id=img-preoload />");
+									$img.attr('src', "/web/images/preloader.gif");
+									$("#preload").append($img);
+
+								}
+
 							})
 							.done(function(datos) {
 
@@ -222,25 +229,16 @@ $(function()
 								   // sentencias para manejar cualquier excepción
 								   if(reprobados=='1')
 								   {
-
-								   $('#table_id').find('.notas').empty();
+								   	$('#table_id').find('.notas').empty();
 								   }
 								}
 
 								if(reprobados=='1')
 								{
-
 									$('#table_id').find('.notas').empty();
 								}
 							});
 
-
-
-
-							$('#btnpdf').click(function(){
-
-
-							});
 						}//Fin función getTablaEstadisticas
 
 

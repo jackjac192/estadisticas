@@ -147,7 +147,7 @@ class ConsolidadoController{
 		$array_listado_estudiantes_asignatura_periodos = $this->_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
 		$array_estudiantes_acumulados_asignaturas = $this->_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
 		$array_estudiantes_requeridas_asignaturas = $this->_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
-		var_dump($cerrarInforme);
+		
 
 		if($cerrarInforme){
 
