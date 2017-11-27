@@ -116,7 +116,7 @@ class FPDFModel extends FPDF
     }
 
     function ReportesAcademico(){
-      
+
     }
 // Tabla coloreada
     public function FancyTable($header, $data, $puestos)
@@ -147,29 +147,29 @@ class FPDFModel extends FPDF
 
         foreach ($puestos as $value) {
             if($row['id_estudiante']== $value['id']){
-               $this->SetX(7);
-               $this->Cell($w[0],5,$cont,'LR',0,'C',$fill);
-               $this->Cell($w[1],5,utf8_decode($row['primer_apellido']." ".$row['segundo_apellido']." ".$row['primer_nombre']."".$row['segundo_nombre']),'LR',0,'L',$fill);
-               $this->Cell($w[2],5,utf8_decode($value['puesto']),'LR',0,'C',$fill);
-               $this->Cell($w[3],5,($row['S']=="0"?"":$row['S']),'LR',0,'C',$fill);
-               $this->Cell($w[4],5,($row['A']=="0"?"":$row['A']),'LR',0,'C',$fill);
-               $this->Cell($w[5],5,($row['B']=="0"?"":$row['B']),'LR',0,'C',$fill);
-               $this->Cell($w[6],5,($row['V']=="0"?"":$row['V']),'LR',0,'C',$fill);
-               $this->Cell($w[7],5,($row['TAV']=="0"?"":$row['TAV']),'LR',0,'C',$fill);
-               $this->Cell($w[8],5,($row['Promedio']=="0"?"":$row['Promedio']),'LR',0,'C',$fill);
-               $this->Cell($w[9],5,utf8_decode($row['Desempeno']),'LR',0,'C',$fill);
-           }
-       }
+             $this->SetX(7);
+             $this->Cell($w[0],5,$cont,'LR',0,'C',$fill);
+             $this->Cell($w[1],5,utf8_decode($row['primer_apellido']." ".$row['segundo_apellido']." ".$row['primer_nombre']."".$row['segundo_nombre']),'LR',0,'L',$fill);
+             $this->Cell($w[2],5,utf8_decode($value['puesto']),'LR',0,'C',$fill);
+             $this->Cell($w[3],5,($row['S']=="0"?"":$row['S']),'LR',0,'C',$fill);
+             $this->Cell($w[4],5,($row['A']=="0"?"":$row['A']),'LR',0,'C',$fill);
+             $this->Cell($w[5],5,($row['B']=="0"?"":$row['B']),'LR',0,'C',$fill);
+             $this->Cell($w[6],5,($row['V']=="0"?"":$row['V']),'LR',0,'C',$fill);
+             $this->Cell($w[7],5,($row['TAV']=="0"?"":$row['TAV']),'LR',0,'C',$fill);
+             $this->Cell($w[8],5,($row['Promedio']=="0"?"":$row['Promedio']),'LR',0,'C',$fill);
+             $this->Cell($w[9],5,utf8_decode($row['Desempeno']),'LR',0,'C',$fill);
+         }
+     }
 
 
 
-       $this->Ln();
-       $fill = !$fill;
-       $cont++;
-   }
+     $this->Ln();
+     $fill = !$fill;
+     $cont++;
+ }
     // Línea de cierre
-   $this->SetX(7);
-   $this->Cell(array_sum($w),0,'','T');
+ $this->SetX(7);
+ $this->Cell(array_sum($w),0,'','T');
 }
 
 
@@ -212,37 +212,37 @@ public function PorcentualesTable($header, $data, $puestos)
 
         foreach ($puestos as $value) {
             if($row['id_asignatura']== $value['id']){
-               $this->SetX(7);
-               $this->Cell($w[0],5,$cont,'LR',0,'C',$fill);
-               $this->Cell($w[1],5,utf8_decode($row['Asignatura']),'LR',0,'L',$fill);
-               $this->Cell($w[2],5,utf8_decode($value['puesto']),'LR',0,'C',$fill);
-               $this->Cell($fp,5,($row['S']=="0"?"":$row['S']),'LR',0,'C',$fill);
-               $this->Cell($fp,5,($row['S%']=="0"?"":$row['S%'].'%'),'LR',0,'C',$fill);
+             $this->SetX(7);
+             $this->Cell($w[0],5,$cont,'LR',0,'C',$fill);
+             $this->Cell($w[1],5,utf8_decode($row['Asignatura']),'LR',0,'L',$fill);
+             $this->Cell($w[2],5,utf8_decode($value['puesto']),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['S']=="0"?"":$row['S']),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['S%']=="0"?"":$row['S%'].'%'),'LR',0,'C',$fill);
 
-               $this->Cell($fp,5,($row['A']=="0"?"":$row['A']),'LR',0,'C',$fill);
-               $this->Cell($fp,5,($row['A%']=="0"?"":$row['A%'].'%'),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['A']=="0"?"":$row['A']),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['A%']=="0"?"":$row['A%'].'%'),'LR',0,'C',$fill);
 
-               $this->Cell($fp,5,($row['B']=="0"?"":$row['B']),'LR',0,'C',$fill);
-               $this->Cell($fp,5,($row['B%']=="0"?"":$row['B%'].'%'),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['B']=="0"?"":$row['B']),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['B%']=="0"?"":$row['B%'].'%'),'LR',0,'C',$fill);
 
-               $this->Cell($fp,5,($row['V']=="0"?"":$row['V']),'LR',0,'C',$fill);
-               $this->Cell($fp,5,($row['V%']=="0"?"":$row['V%'].'%'),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['V']=="0"?"":$row['V']),'LR',0,'C',$fill);
+             $this->Cell($fp,5,($row['V%']=="0"?"":$row['V%'].'%'),'LR',0,'C',$fill);
 
-               $this->Cell($fp,5,($row['TAV']=="0"?"":$row['TAV']),'LR',0,'C',$fill);
-               $this->Cell($w[3],5,($row['Promedio']=="0"?"":$row['Promedio']),'LR',0,'C',$fill);
-               $this->Cell($w[4],5,utf8_decode($row['Desempeno']),'LR',0,'C',$fill);
-           }
-       }
+             $this->Cell($fp,5,($row['TAV']=="0"?"":$row['TAV']),'LR',0,'C',$fill);
+             $this->Cell($w[3],5,($row['Promedio']=="0"?"":$row['Promedio']),'LR',0,'C',$fill);
+             $this->Cell($w[4],5,utf8_decode($row['Desempeno']),'LR',0,'C',$fill);
+         }
+     }
 
 
 
-       $this->Ln();
-       $fill = !$fill;
-       $cont++;
-   }
+     $this->Ln();
+     $fill = !$fill;
+     $cont++;
+ }
     // Línea de cierre
-   $this->SetX(7);
-   $this->Cell(array_sum($w)+($fp*(count($header)-5)),0,'','T');
+ $this->SetX(7);
+ $this->Cell(array_sum($w)+($fp*(count($header)-5)),0,'','T');
 }
 
 public function HeaderConsolidate(){
@@ -298,8 +298,8 @@ public function ConsolidadoTable(
     $matriz_notas = [];
     $array_estudiantes = array();
     $max_superior = $valoracionesAll[3]['maximo'];
-    $cols_row = (($is_acumulados==true || $informe==true)?2:0) + count($periodos_evaluados);
-    //$cols_row = $informe==true?2:$cols_row;
+    $cols_row = (($is_acumulados==true)?2:0) + count($periodos_evaluados);
+    $cols_row = $informe==true?2:$cols_row;
 
     $numero_periodos = count($periodosAll);
     $min_bajo = $valoracionesAll[1]['minimo'];
@@ -360,17 +360,20 @@ public function ConsolidadoTable(
 
 
                 if($key != 0)
-                {
-                    $this->Ln();
-                    $this->SetX(7);
-                    $this->Cell($w[0],4,"",0,0,'C');
-                    $this->Cell($w[1],4,"",0,0,'LR');
+                {   
+                    if(!$informe){
+                        $this->Ln();
+                        $this->SetX(7);
+                        $this->Cell($w[0],4,"",0,0,'C');
+                        $this->Cell($w[1],4,"",0,0,'LR');
+                    }
                 }
-
-                $this->Cell($w[2],4,utf8_decode($_puesto),1,0,'C',$fill);
-                $this->Cell($w[3],4,$valuePeriodo,1,0,'C',$fill);
-                $this->Cell($w[4],4,utf8_decode(round($_promedio,1)),1,0,'C',$fill);
-                $this->Cell($w[5],4,$_tav,1,0,'C',$fill);
+                if(!$informe){
+                    $this->Cell($w[2],4,utf8_decode($_puesto),1,0,'C',$fill);
+                    $this->Cell($w[3],4,$valuePeriodo,1,0,'C',$fill);
+                    $this->Cell($w[4],4,utf8_decode(round($_promedio,1)),1,0,'C',$fill);
+                    $this->Cell($w[5],4,$_tav,1,0,'C',$fill);
+                }
 
                 $notas_asig = [];
 
@@ -398,17 +401,25 @@ public function ConsolidadoTable(
 
                             $tiene_nota=true;
                             if($is_repro==true && ($valoracion_asignatura >= $min_basico || $valoracion_superacion >= $min_basico ) == true){
-                                $this->Cell($fullpart,4,"",1,0,'C',$fill);
+                                if(!$informe){
+                                    $this->Cell($fullpart,4,"",1,0,'C',$fill);
+                                }
                                 $this->SetTextColor(0);
                             }else{
-                                $this->Cell($fullpart,4,$valoracion_asignatura.$valoracion_superacion,1,0,'C',$fill);
+                                if(!$informe){
+                                    $this->Cell($fullpart,4,$valoracion_asignatura.$valoracion_superacion,1,0,'C',$fill);
+                                }
                                 $this->SetTextColor(0);
+                                
+                                
                             }
 
                         }
                     }
                     if(!$tiene_nota){
-                        $this->Cell($fullpart,4,"",1,0,'C',$fill);
+                        if(!$informe){
+                            $this->Cell($fullpart,4,"",1,0,'C',$fill);
+                        }
                     }
                 }
                 $periodo_asig[$key] = $notas_asig;
@@ -427,7 +438,7 @@ public function ConsolidadoTable(
                     $promedio += ($array_promedios[$_key] * ($peso_periodos[$_key]/100));
                 }
                 $this->SetFillColor(224,235,255);
-                $this->Ln();
+                if(!$informe){$this->Ln();}                
                 $this->SetX(7);
                 $this->Cell($w[0],4,"",0,0,'C');
                 $this->Cell($w[1],4,"",0,0,'LR');
@@ -453,7 +464,7 @@ public function ConsolidadoTable(
 
                     }
 
-                   if($is_repro){
+                    if($is_repro){
                         $display_result = true;
                         foreach ($display as $key => $value) {
                             if (!$value) {
@@ -517,30 +528,34 @@ public function ConsolidadoTable(
                         $valoracion_requerida = round((($min_basico - round($array_promedios_acumulados[1],1))/ $numero_periodo_faltantes) / ($peso_periodo_prox / 100),1);
                     }else{
                         $peso_periodo_prox = $periodosAll[(count($periodos_evaluados)-1)]['peso'];
-                         $valoracion_requerida = round((($min_basico - round($array_promedios_acumulados[1],1))/ ($numero_periodo_faltantes+1)) / ($peso_periodo_prox / 100),1);
+                        $valoracion_requerida = round((($min_basico - round($array_promedios_acumulados[1],1))/ ($numero_periodo_faltantes+1)) / ($peso_periodo_prox / 100),1);
                     }
+                    $valoracion_asignatura = "";
                     
-                        if($valoracion_requerida > $max_superior){
-                                $valoracion_requerida = "";
-                            }
-                            
-                            if( $array_promedios_acumulados[2] <= $numero_periodos && $array_promedios_acumulados[1] >= $min_basico){
-                                $valoracion_requerida = "APRO";
-                            }
-                                
+                    
+                    if($valoracion_requerida > $max_superior){
+                        $valoracion_asignatura = "";
+                    }
+
+                    if( $array_promedios_acumulados[2] <= $numero_periodos && $array_promedios_acumulados[1] >= $min_basico){
+                        $valoracion_asignatura = "APRO";
+                    }
+
                     
                     if($numero_periodo_faltantes == 0 && $array_promedios_acumulados[1] < $min_basico && $array_promedios_acumulados[2] == $numero_periodos){
-                    $valoracion_requerida = "REP";
+                        $valoracion_asignatura = "REP";
                     }
-                        
 
                             //Si el número de veces que fue valorada la asignatura es menor al número de periodos evaluados,
                             //No le calculamos la valoración requerida, porque supera la escala de evaluación.
                     if($array_promedios_acumulados[2]<($numero_periodo_evaluados-1)){
-                        $valoracion_requerida = "";
+                        $valoracion_asignatura = "";
                     }
-                        
-                        
+                    if($informe){
+                        $valoracion_asignatura = $valoracion_requerida<=0?"APRO":$valoracion_requerida;
+                        $valoracion_asignatura = $valoracion_requerida>0?"REP":$valoracion_asignatura;
+                    }                   
+
 
                     if($is_repro){
                         $display_result = true;
@@ -551,12 +566,12 @@ public function ConsolidadoTable(
                         }
                         if(!$display_result){
                             $promedio_acumulado_asig = $promedio_acumulado_asig==0?"":$promedio_acumulado_asig;
-                            $this->Cell($fullpart,4,$valoracion_requerida,1,0,'C',true);
+                            $this->Cell($fullpart,4,$valoracion_asignatura,1,0,'C',true);
                         }else{
                             $this->Cell($fullpart,4,"",1,0,'C',true);
                         }
                     }else{
-                        $this->Cell($fullpart,4,$valoracion_requerida,1,0,'C',true);
+                        $this->Cell($fullpart,4,$valoracion_asignatura,1,0,'C',true);
                     }
 
 

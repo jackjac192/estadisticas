@@ -1,5 +1,5 @@
-var url ="http://estadisticas.dev";
-//var url = "http://agora.net.co/estadisticas"
+//var url ="http://estadisticas.dev";
+var url = "http://agora.net.co/estadisticas"
 
 $(function()
 {

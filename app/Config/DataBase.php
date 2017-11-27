@@ -5,16 +5,19 @@ namespace Config;
 class DataBase{
   
     
-private $user       ='root';
-private $password   ='';
-private $host       ='localhost';
-protected  $database = '';
-    
-/*
 private $user       ='agoranet';
 private $password   ='Richard_111';
 private $host       ='localhost';
 protected  $database = '';
+    
+/*
+
+private $user       ='root';
+private $password   ='';
+private $host       ='localhost';
+protected  $database = '';
+
+
 
 */
 private $conexion;

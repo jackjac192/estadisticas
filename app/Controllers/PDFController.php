@@ -14,7 +14,7 @@ use Model\PorcentualesModel as Porcentuales;
 use Model\PromedioGrupoModel as PromedioGrupo;
 use Helpers\GenerarPuestos as PuestosPromedios;
 use ModelPDF\DissaproveStudentPDF as DissaproveStudentPDF;
-
+ 
 
 
 class PDFController{
@@ -53,7 +53,7 @@ class PDFController{
 
 			$dir = "template-pdf";
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 
@@ -160,7 +160,7 @@ class PDFController{
 
 			$dir = "doc/$grado";
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 			$contador = 0;
@@ -223,7 +223,7 @@ class PDFController{
 			$pdf->TableHeader($informacionGrupo, $periodo_pdf, $header, 'LISTADO DE PERIODOS ACUMULADOS');
 			$pdf->AddPage('L','Legal');
 			$pdf->SetFont('Arial','B',8);
-
+			/*
 			$_calcular->setArraysCalcular(
 				[
 					'array_datos_estudiantes_periodos' =>	$estudiantesPromedios,
@@ -250,8 +250,7 @@ class PDFController{
 			$array_listado_estudiantes_asignatura_periodos = $_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
 			$array_estudiantes_acumulados_asignaturas = $_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
 			$array_estudiantes_requeridas_asignaturas = $_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
-
-
+			*/
 
 			$pdf->ConsolidadoTable(
 				$header,
@@ -330,7 +329,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -428,7 +427,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -557,7 +556,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -670,7 +669,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 777);
+				mkdir($dir, 0777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);

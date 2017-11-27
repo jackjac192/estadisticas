@@ -151,7 +151,7 @@ class ConsolidadoController{
 		$array_periodos_evaluados = $_calcular->getArrayPeriodosEvaluados();
 		
 
-		if($cerrar == "true"){
+		if($cerrar == "true" && $area=="0" && $reprobados == "0" && $academicas == "0"){
 			
 			$cerrarInforme_obj = new CerrarInforme(
 				[	
@@ -163,6 +163,8 @@ class ConsolidadoController{
 			
 			
 			
+		}else{
+			echo "No se ha creado el informe final, solo es posible por asignaturas";
 		}
 		
 		header("Access-Control-Allow-Origin: *");
