@@ -5,7 +5,7 @@ use($min_bajo,$min_basico){
 	$valoracion_asignatura = $valoracion<$min_bajo?"":$valoracion;
 	$valoracion_superacion = $superacion==""?"":"/".$superacion;
 
-	$span_class_v = $valoracion < $min_basico?'r-rojo':$min_bajo;
+	$span_class_v = $valoracion < $min_basico?'r-rojo':'notas';
 	$span_class_s = $superacion< $min_basico?'r-rojo':'notas';
 
 	$span_valoracion = "<span class=".$span_class_v.">".$valoracion_asignatura."</span>";
@@ -31,9 +31,7 @@ $getTextformatoRequereridasAsignatura = function ($valoracion_requerida)use(
 
 ?>
 
-<div id="preload">
-	
-</div>
+
 <div id="contentConsol" class="content-tabla-grupo">	
 	<table id="table_id"  class="cell-border">
 		<thead>
@@ -82,20 +80,20 @@ $getTextformatoRequereridasAsignatura = function ($valoracion_requerida)use(
 						
 						if(!$informe)
 						{					
-							foreach ($periodos_evaluados as $key => $valuePeriodo) 
+							foreach ($array_periodos_evaluados as $key_periodo_eval => $valuePeriodo) 
 							{
 								?>
 								<td colspan="" data-id="" class=" ">
-									<?php echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key]['puesto'],1);?>
+									<?php echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key_periodo_eval]['puesto'],1);?>
 								</td>
 								<td class=" ">
-									<?php echo $valuePeriodo;?>
+									<?php echo ($valuePeriodo+1);?>
 								</td>
 								<td class=" ">
-									<?php echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key]['promedio'],1);?>
+									<?php echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key_periodo_eval]['promedio'],1);?>
 								</td>
 								<td class="">
-									<?php	echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key]['TAV'],1);?>
+									<?php	echo round($array_listado_estudiantes_promedios_periodos[$id_estudiante][$key_periodo_eval]['TAV'],1);?>
 								</td>
 								<?php																	
 								
@@ -103,9 +101,9 @@ $getTextformatoRequereridasAsignatura = function ($valoracion_requerida)use(
 									foreach ($asignaturasEvaluadas as $asignatura) {
 										?>
 										<td class=""> 
-											<?php 
-											$valoracion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key][$asignatura['id_asignatura']]['valoracion'];
-											$superacion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key][$asignatura['id_asignatura']]['superacion'];
+											<?php 											
+											$valoracion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key_periodo_eval][$asignatura['id_asignatura']]['valoracion'];
+											$superacion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key_periodo_eval][$asignatura['id_asignatura']]['superacion'];
 
 											echo $getTextformatoValoracionAsignatura($valoracion,$superacion);
 
@@ -118,20 +116,20 @@ $getTextformatoRequereridasAsignatura = function ($valoracion_requerida)use(
 								?>
 							</tr>
 							<?php
-							}//Fin foreach $key
+							}//Fin foreach $key_periodo_eval
 						}
 						else{	
 
 							$nombre_novedad = "NOVEDAD";
 							$nombre_informe = "INFORME FINAL";
-							foreach ($periodos_evaluados as $key => $valuePeriodo) 
+							foreach ($array_periodos_evaluados as $key_periodo_eval => $valuePeriodo) 
 							{																					
 								
 								if(isset($asignaturasEvaluadas) && $asignaturasEvaluadas != false){
 									foreach ($asignaturasEvaluadas as $asignatura) {
 
-										$valoracion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key][$asignatura['id_asignatura']]['valoracion'];
-										$superacion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key][$asignatura['id_asignatura']]['superacion'];
+										$valoracion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key_periodo_eval][$asignatura['id_asignatura']]['valoracion'];
+										$superacion = $array_listado_estudiantes_asignatura_periodos[$id_estudiante][$key_periodo_eval][$asignatura['id_asignatura']]['superacion'];
 
 										$nota_asignatura = $valoracion>=$superacion?$valoracion:$superacion;
 									}

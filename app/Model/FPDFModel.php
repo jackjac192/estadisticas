@@ -6,7 +6,7 @@ class FPDFModel extends FPDF
 {
 
     private $info= array();
-    private $periodo =1;
+    private $periodo = 1;
     private $header = array();
     private $title = '';
 
@@ -262,7 +262,9 @@ public function ConsolidadoTable(
     $peso_periodos,
     $is_acumulados,
     $periodosAll,
-    $is_repro=false)
+    $is_repro=false,
+    $informe
+)
 {
     // Colores, ancho de línea y fuente en negrita
     $this->SetFillColor(255,255,255);
@@ -296,7 +298,8 @@ public function ConsolidadoTable(
     $matriz_notas = [];
     $array_estudiantes = array();
     $max_superior = $valoracionesAll[3]['maximo'];
-    $cols_row = ($is_acumulados?2:0) + count($periodos_evaluados);
+    $cols_row = (($is_acumulados==true || $informe==true)?2:0) + count($periodos_evaluados);
+    //$cols_row = $informe==true?2:$cols_row;
 
     $numero_periodos = count($periodosAll);
     $min_bajo = $valoracionesAll[1]['minimo'];
@@ -415,7 +418,7 @@ public function ConsolidadoTable(
             $display=array();
 
             # Muestra la valoracion acumulada de cada asignatura
-            if($is_acumulados){
+            if($is_acumulados || $informe){
 
                 $matriz_notas[$id_estudiante]= $periodo_asig;
                 $promedio = 0;
@@ -476,7 +479,7 @@ public function ConsolidadoTable(
 
             $display=array();
             # Muestras las valoración requerida del próximo periodo
-            if($is_acumulados){
+            if($is_acumulados || $informe){
                 $this->SetFillColor(224,235,255);
                 $this->Ln();
                 $this->SetX(7);

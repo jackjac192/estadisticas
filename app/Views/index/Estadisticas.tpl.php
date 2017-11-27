@@ -10,10 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css">
 </head>
 <body>
-	<br><br>
-
-
-
+	
 	<div class="container">
 		<div class="row titles-rows seconds">
 			<div class="panel panel-primary">
@@ -84,7 +81,7 @@
 			<div class="col-md-4 ocultar-panel" >
 				<form id="idform" action=""  method="post">
 
-					<input type="hidden" name="db" value="<?php echo $db?>">
+					<input type="hidden" name="db" id ="db" value="<?php echo $db?>">
 					<input type="hidden" name="grupo" id="inputGrupo">
 					<input type="hidden" name="grado" id="inputGrado">
 					<input type="hidden" name="periodo" id="inputPeriodo">
@@ -137,14 +134,23 @@
 	</div>
 	<br>
 
+
 	<div class="container" id="contenedor-estadisticas">
 
-
-
 	</div>
+	<div class="container">
+		<center>
+			<div id="preload">
+				
+			</div>
+		</center>
+	</div>
+	
 	<div class="container" id="contentGrupos">
 
 	</div>
+	<br>
+
 
 
 

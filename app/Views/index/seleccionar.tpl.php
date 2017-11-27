@@ -106,8 +106,6 @@
 <script src="<?=URL?>/web/js/jquery-1.12.4.js"></script>   
 <script src="<?=URL?>/web/js/bootstrap.min.js"></script>
 <script src="<?=URL?>/web/js/jquery.dataTables.min.js"></script>
-<script src="<?=URL?>/web/js/multiselect.js"></script>
-
 
 </body>
 </html>

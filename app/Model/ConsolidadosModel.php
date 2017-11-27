@@ -255,14 +255,14 @@ class ConsolidadosModel extends BD{
 		";
 		//Quitamos la condición de mostrar solo areas reprobadas ".$condicionRepro.", porque la cantidad de areas reprobadas 
 		//tiende a ser diferente por cada periodo. 
-		//print_r($this->query);
+		$this->execute_single_query();
+
 		if($this->resultado->num_rows > 0){
 			$this->get_result_query();
-
 			return $this->rows;
-
 		}
-		return false;
+
+		return $this->query;
 	}
 
 	public function getEstudiantesPromediosAreas($grupo, $periodo,$academica){
@@ -307,7 +307,7 @@ class ConsolidadosModel extends BD{
 		
 		$this->execute_single_query();
 		
-		//print_r($this->query);
+
 		if($this->resultado->num_rows > 0){
 			$this->get_result_query();
 

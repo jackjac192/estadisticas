@@ -15,7 +15,7 @@ class FPDIModel extends FPDI
     public function generarReporte($infoStudents, $informacionGrupo){
 
       $informacionGrupo = $informacionGrupo[0];
-
+      
       foreach ($infoStudents as $estudiante) {
 
       $this->setSourceFile('template-pdf/ficha.pdf');

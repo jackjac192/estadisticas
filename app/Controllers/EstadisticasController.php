@@ -33,7 +33,7 @@ class EstadisticasController{
 		$jornadas = $institucion_obj->getJornadas();
 		$anos = $institucion_obj->getAnosLectivos();
 		
-		//header("Access-Control-Allow-Origin: *");
+		header("Access-Control-Allow-Origin: *");
 		$view = new View('index', 'seleccionar', 
 			[
 			'grados' => $grados, 

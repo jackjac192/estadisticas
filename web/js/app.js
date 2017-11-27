@@ -1,7 +1,6 @@
 var url ="http://estadisticas.dev";
 //var url = "http://agora.net.co/estadisticas"
 
-
 $(function()
 {
 	var estado=true;
@@ -48,7 +47,8 @@ $(function()
 			$.ajax({
 				method: "POST",
 				url: url+"/Estadisticas/getSeleccionarGrupo/"+baseDatos,
-				data: dataString
+				data: dataString,
+				
 			})
 			.done(function(datos) {
 				$('#contenedor-estadisticas').show(100);
@@ -97,7 +97,7 @@ $(function()
 					$.ajax({
 						method: "POST",
 						url: url+"/Grupo/getGrupos/"+idGrado+"/"+baseDatos,
-						data: ''
+						data: '',						
 					})
 					.done(function(datos) {
 
@@ -117,6 +117,7 @@ $(function()
 
 				function getTablaEstadisticas(ev){
 					
+
 					var cerrarInforme = false;
 					if(ev.currentTarget.id == "btnIF"){
 						ev.preventDefault();
@@ -136,6 +137,7 @@ $(function()
 					var numero = $('#selectNumero').val();
 					var jornada = $('#selectJornadas').val();
 					var ano = $('#selectLectivo').val();
+					var db = $('#db').val();
 					var ordering;
 					ordering= jornada=="0"?true:false;
 					var arreglo = controladorAccion.split('/');
@@ -161,7 +163,7 @@ $(function()
 
 					var data = 'grupo='+idGrupo+'&periodo='+idPeriodo+'&area='+area+'&reprobados='+
 					reprobados+'&academicas='+academicas+'&numero='+numero+'&operador='+operador+'&jornada='+
-					jornada+'&ano='+ano+'&per_acumulados='+periodos_acumulados+'&informe='+informe+'&cerrarInforme='+cerrarInforme;
+					jornada+'&ano='+ano+'&per_acumulados='+periodos_acumulados+'&informe='+informe+'&cerrarInforme='+cerrarInforme+'&db='+db;
 					console.log(cerrarInforme);
 							//console.log(idPeriodo);
 
@@ -170,15 +172,17 @@ $(function()
 								url: url+controladorAccion+baseDatos,
 								data: data,
 								beforeSend: function(xhr){
+									$('#contentGrupos').empty();
 									var $img = $("<img class=loader-img id=img-preoload />");
-									$img.attr('src', "/web/images/preloader.gif");
-									$("#preload").append($img);
+									$img.attr('src', "http://agora.net.co/estadisticas/web/images/preloader.gif");
+									$("#preload").empty().append($img);
+
 
 								}
 
 							})
 							.done(function(datos) {
-
+								$("#preload").empty()
 								$('#contentGrupos').empty().append(datos);
 								try {
 									$('#table_id').DataTable({
@@ -253,23 +257,7 @@ $(function()
 
 });
 
-
-
-
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }); //Fin de  $function

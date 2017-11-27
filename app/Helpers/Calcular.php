@@ -83,11 +83,12 @@ class Calcular
 		$this->cantidad_periodos_faltantes_ = (count($array_periodos) - (count($array_periodos_evaluados)-1));
 		$this->array_periodo_proximo = $this->cantidad_periodos_faltantes==0?[]:$array_periodos[count($array_periodos_evaluados)] ;
 		$this->porcentaje_periodo_prox = $this->cantidad_periodos_faltantes==0?[]:$array_periodos[count($array_periodos_evaluados)]['peso'];
-		$this->porcentaje_periodo_prox_ = $array_periodos[count($array_periodos_evaluados)-1]['peso'];		
+		$this->porcentaje_periodo_prox_ = $this->cantidad_periodos_faltantes==0?$array_periodos[count($array_periodos_evaluados)-1]['peso']:0 ;		
 
 		$this->array_porcentajes_periodos = $array_porcentajes_periodos;
 		$this->array_datos_estudiantes_periodos = $array_datos_estudiantes_periodos;
 		$this->array_listado_asignaturas_evaluadas = $array_listado_asignaturas_evaluadas;
+
 		$this->array_datos_estudiantes_promedios_periodos = $array_datos_estudiantes_promedios_periodos;
 		$this->array_datos_estudiante_asignaturas_periodos = $array_datos_estudiantes_asignaturas_periodos;
 
@@ -109,14 +110,15 @@ class Calcular
 		foreach ($this->array_listado_estudiantes_evaluados as $key_id_estudiante => $estudiante_evaluado_) {
 			
 			foreach ($this->array_datos_estudiante_asignaturas_periodos as $key_periodo_evaluado => $array_estudiantes_asignaturas) {
-
-				foreach ($array_estudiantes_asignaturas as $key_asignatura => $estudiante_asignatura) {
-					if($key_id_estudiante == $estudiante_asignatura['id_estudiante']){
-						$array_estudiantes_asignaturas_valoracion[$estudiante_asignatura['id_asignatura']]['valoracion'] = $estudiante_asignatura['Valoracion'];	
-						$array_estudiantes_asignaturas_valoracion[$estudiante_asignatura['id_asignatura']]['superacion'] = $estudiante_asignatura['Superacion'];		
+				if($array_estudiantes_asignaturas != false) {
+					foreach ($array_estudiantes_asignaturas as $key_asignatura => $estudiante_asignatura) {
+						if($key_id_estudiante == $estudiante_asignatura['id_estudiante']){
+							$array_estudiantes_asignaturas_valoracion[$estudiante_asignatura['id_asignatura']]['valoracion'] = $estudiante_asignatura['Valoracion'];	
+							$array_estudiantes_asignaturas_valoracion[$estudiante_asignatura['id_asignatura']]['superacion'] = $estudiante_asignatura['Superacion'];		
+						}
 					}
-				}
-				$array_periodos_asignatura[$key_periodo_evaluado] = $array_estudiantes_asignaturas_valoracion;				
+					$array_periodos_asignatura[$key_periodo_evaluado] = $array_estudiantes_asignaturas_valoracion;	
+				}			
 			}	
 			$this->array_listado_estudiantes_asignaturas_periodos[$key_id_estudiante] = $array_periodos_asignatura;
 		}
@@ -128,6 +130,7 @@ class Calcular
 		$asignatura_requeridas = [];
 		if($this->isCalcular){
 			foreach ($this->array_listado_estudiantes_asignaturas_periodos as $key_id_estudiante => $array_estudiante_periodos_) {
+				
 				foreach ($this->array_listado_asignaturas_evaluadas as $asignatura_) {
 					$calculo_acumuladas = 0;
 					$calculo_requeridas = 0;
@@ -223,11 +226,15 @@ class Calcular
 
 
 	public function crearListadoEstudiantes(){
-		$count_eval = 0;
+		$count_eval = 0;	
+		$periodos_evaluados = [];
+		
 		foreach ($this->array_datos_estudiantes_periodos as $key_numero_periodo => $listado_estudiante) {
 
-			if(isset($listado_estudiante) && $listado_estudiante != false){
-				$count_eval++;
+			
+			if($listado_estudiante != false){
+
+				
 
 				# Listado_estudiante trae un arreglo con datos personales de los estudiantes por cada periodo
 				# Y Necesitamos crear un listado unico por todos los periodos			
@@ -244,10 +251,18 @@ class Calcular
 						'primer_nombre'		=>	$estudiante_['primer_nombre'],
 						'segundo_nombre'	=>	$estudiante_['segundo_nombre']
 					);				
-				}	
+				}
+				$periodos_evaluados[$count_eval] = $count_eval;
+				$count_eval++;	
 			}			
-		}
+		}		
+		
+		$this->array_periodos_evaluados = $periodos_evaluados;
 		$this->cantidad_de_periodos_evaluados = $count_eval;
+	}
+
+	public function getArrayPeriodosEvaluados(){
+		return $this->array_periodos_evaluados;
 	}
 
 

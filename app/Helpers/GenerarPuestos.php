@@ -6,43 +6,50 @@ namespace Helpers;
 class GenerarPuestos {
 
 	public function obtenerPromedios($estudiantesPromedios, $db=null){
-				
+		
 		$contador=0;
 		$puestos= array();
 		$tavs = array();
-		foreach ($estudiantesPromedios as $key => $value) {
-			$estudiante = array(
-				'id' => $value['id_estudiante'], 
-				'pgg' => $value['pgg'], 
-				'TAV' => $value['TAV'] 
+		if($estudiantesPromedios != false){
+			foreach ($estudiantesPromedios as $key => $value) {
+				
+				$estudiante = array(
+					'id' => $value['id_estudiante'], 
+					'pgg' => $value['pgg'], 
+					'TAV' => $value['TAV'] 
 				);
 
-			$puestos[$contador] = $estudiante;
-			$tavs[$contador]= $value['TAV'];
-			$contador++;
-		}
+				$puestos[$contador] = $estudiante;
+				$tavs[$contador]= $value['TAV'];
+				$contador++;
+			}
 
-		$max = max($tavs);
-		$contador=0;
-		$puestosDef = array();
-		foreach ($puestos as $value) {
-			$estudiante = array(
-				'id' => $value['id'], 
-				'pgg' => round(($value['pgg']==0?0:(($value['pgg']*$value['TAV'])/$max)),1), 
-				'promedio' => $value['pgg'],
-				'TAV' => $value['TAV']
+			$max = max($tavs);
+
+			$contador=0;
+			$puestosDef = array();
+			foreach ($puestos as $value) {
+				$estudiante = array(
+					'id' => $value['id'], 
+					'pgg' => round(($value['pgg']==0?0:(($value['pgg']*$value['TAV'])/$max)),1), 
+					'promedio' => $value['pgg'],
+					'TAV' => $value['TAV']
 				);
-			$puestosDef[$value['id']] = $estudiante;
-			$contador++;
-		}
-		$puestosDef = $this->orderMultiDimensionalArray($puestosDef, 'pgg', true);
+				$puestosDef[$value['id']] = $estudiante;
+				$contador++;
+			}
+			$puestosDef = $this->orderMultiDimensionalArray($puestosDef, 'pgg', true);
 		//$puestos = $this->orderMultiDimensionalArray($puestos, 'TAV', true);
 		//$puestos = $this->orderMultiDimensionalArray($puestos, 'tav', true);
-		return $this->generarPuesto($puestosDef);
+			return $this->generarPuesto($puestosDef);
+		}
+
+		
+		
 	}
 
 	public function obtenerPromediosAsig($estudiantesPromedios, $db=null){
-				
+		
 		$contador=0;
 		$puestos= array();
 		$tavs = array();
@@ -53,7 +60,7 @@ class GenerarPuestos {
 				'TAV' => $value['TAV'],
 				'promedio' => $value['pgg'],
 				'TAV' => $value['TAV']
-				);
+			);
 			$puestos[$contador] = $estudiante;
 			$tavs[$contador]= $value['TAV'];
 			$contador++;
@@ -107,7 +114,7 @@ class GenerarPuestos {
 					'pgg' => $value['pgg'], 
 					'promedio' => $value['promedio'],
 					'TAV' => $value['TAV'] 
-					);
+				);
 				$pggAux = $value['pgg'];
 				$puestos[$value['id']]= $estudiantePgg;
 				$contadorAux++;
@@ -119,7 +126,7 @@ class GenerarPuestos {
 					'pgg' => $value['pgg'],
 					'promedio' => $value['promedio'],
 					'TAV' => $value['TAV'] 
-					);
+				);
 				$pggAux=$value['pgg'];
 				$puestos[$value['id']] = $estudiantePgg;
 			}
@@ -130,7 +137,7 @@ class GenerarPuestos {
 					'pgg' => $value['pgg'],
 					'promedio' => $value['promedio'],
 					'TAV' => $value['TAV'] 
-					);
+				);
 				$pggAux=$value['pgg'];
 				$puestos[$value['id']] = $estudiantePgg;
 				$contadorAux++;

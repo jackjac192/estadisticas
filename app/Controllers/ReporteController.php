@@ -8,9 +8,8 @@ use Model\PuestosModel as Puestos;
 class ReporteController{
 
 
-
 	public function getReportesAction($db){
-
+		header("Access-Control-Allow-Origin: *");
 		echo "Ya puede imprimir";
 
 	}

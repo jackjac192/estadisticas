@@ -3,6 +3,7 @@ namespace Controllers;
 use Config\View 	as View;
 use Model\FPDIModel as FPDI;
 use Model\FPDFModel as FPDF;
+use Helpers\Calcular as Calcular;
 use Model\ReporteModel as ReporteModel;
 use Model\PeriodosModel as Periodos;
 use Model\ValoracionModel as Valoracion;
@@ -19,13 +20,13 @@ use ModelPDF\DissaproveStudentPDF as DissaproveStudentPDF;
 class PDFController{
 
 	function __construct(){
-		$this->puestosPromedios_obj = new PuestosPromedios($_SESSION['db']);
+		$this->puestosPromedios_obj = new PuestosPromedios();
 	}
 
 	public function getReportesAction(){
 
+		$db = $_POST['db'];
 		$arrayGrupos = array();
-		$db = $_SESSION['db'];
 		$grado = $_POST['grado'];
 		$grupo = $_POST['grupo'];
 		$informacionGrupo_obj = new Institucion($db);
@@ -52,13 +53,13 @@ class PDFController{
 
 			$dir = "template-pdf";
 			if (!file_exists($dir)) {
-				mkdir($dir, 0700);
+				mkdir($dir, 777);
 			}
 
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
 			$infoStudents = $obj_reporte->getInfoStudents($grup);
-			
+
 			$pdfiStudents = new FPDI();
 			$pdfiStudents->generarReporte($infoStudents, $informacionGrupo);
 			$path[$contador] = $dir."/".$grup.".pdf";
@@ -95,12 +96,15 @@ class PDFController{
 		$periodo = $_POST['periodo'];
 		$reprobados = $_POST['reprobados'];
 		$academicas	= $_POST['academicas'];
+		$informe = $_POST['informe']=="1"?true:false;
 		$periodos_acumulados = $_POST['per_acumulados']=="1"?true:false;
+		
 
 		$periodos_obj = new Periodos($_POST['db']);
 		$valoracion_obj = new Valoracion($_POST['db']);
 		$consolidado_obj = new Consolidados($_POST['db']);
 		$informacionGrupo_obj = new Institucion($_POST['db']);
+		$_calcular = new Calcular($db);
 
 		$periodosAll = $periodos_obj->getPeriodos()['datos'];
 		$valoraciones = $valoracion_obj->obtenerValoraciones();
@@ -110,10 +114,12 @@ class PDFController{
 		$num_periodos = [];
 		$peso_periodos = [];
 		$periodos_evaluados = [];
+		$isCalcular = false;
 
 		# Si periodos acumulado ha sido seleccionado
-		if (!$periodos_acumulados) {
+		if (!$periodos_acumulados  && !$informe) {
 			$num_periodos[0] = $periodo;
+
 		}else{
 			# $result_per contiene todos los periodos evaluados
 			foreach ($result_per as $key => $value) {
@@ -121,6 +127,7 @@ class PDFController{
 				$num_periodos[$key] = $value['periodos'];
 				$peso_periodos[$key] = $value['peso'];
 			}
+			$isCalcular = true;			
 		}
 
 		# Se guardará la ruta de cada pdf por grupos
@@ -153,7 +160,7 @@ class PDFController{
 
 			$dir = "doc/$grado";
 			if (!file_exists($dir)) {
-				mkdir($dir, 0700);
+				mkdir($dir, 777);
 			}
 
 			$contador = 0;
@@ -216,6 +223,36 @@ class PDFController{
 			$pdf->TableHeader($informacionGrupo, $periodo_pdf, $header, 'LISTADO DE PERIODOS ACUMULADOS');
 			$pdf->AddPage('L','Legal');
 			$pdf->SetFont('Arial','B',8);
+
+			$_calcular->setArraysCalcular(
+				[
+					'array_datos_estudiantes_periodos' =>	$estudiantesPromedios,
+					'array_datos_estudiantes_promedios_periodos' =>	$puestoPromedio,
+					'array_periodos_evaluados' => $periodos_evaluados,
+					'array_porcentajes_periodos' => $peso_periodos,
+					'array_datos_estudiantes_asignaturas_periodos' => $tablaConsolidados,
+					'array_listado_asignaturas_evaluadas' => $asignaturasEvaluadas,
+					'min_bajo' => $valoraciones[1]['minimo'],
+					'min_basico' => $valoraciones[2]['minimo'],
+					'max_superior' => $valoraciones[3]['maximo'],
+					'array_periodos' => $periodosAll,
+					'isCalcular' => $isCalcular
+
+				]
+			);
+
+			//Se debe conservar el orden de ejecución de cada método
+			$array_listado_estudiantes_promedios_periodos = $_calcular->getArrayListadoEstudiantesPromediosPeriodos();
+			$array_listado_estudiantes_evaluados = $_calcular->getArrayListadoEstudiantesEvaluados();
+			$cantidad_periodos_evaluados = $_calcular->getCantidadPeriodosEvaluados();
+			$array_promedios_acumulados = $_calcular->getArrayPromediosAcumulados();
+			$array_puesto_promedio_acumulado = $_calcular->getArrayPuestoPromedioAcumulado();
+			$array_listado_estudiantes_asignatura_periodos = $_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
+			$array_estudiantes_acumulados_asignaturas = $_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
+			$array_estudiantes_requeridas_asignaturas = $_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
+
+
+
 			$pdf->ConsolidadoTable(
 				$header,
 				$estudiantesPromedios,
@@ -228,15 +265,16 @@ class PDFController{
 				$peso_periodos,
 				$periodos_acumulados,
 				$periodosAll,
-				($reprobados=="1"?true:false)
-				);
+				($reprobados=="1"?true:false),
+				$informe
+			);
 			ob_clean();
 			$pdf->Output($path[$cont], "F");
 			$cont++;
 
 		}
 
-
+		
 		$pdfi = new FPDI();
 		$pdfi->setFiles($path);
 		$pdfi->concat();
@@ -292,7 +330,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 0700);
+				mkdir($dir, 777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -390,7 +428,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 0700);
+				mkdir($dir, 777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -519,7 +557,7 @@ class PDFController{
 			$dir = "doc/$grado";
 
 			if (!file_exists($dir)) {
-				mkdir($dir, 0700);
+				mkdir($dir, 777);
 			}
 
 			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
@@ -544,130 +582,12 @@ class PDFController{
 				if($id_student != $value['id_estudiante']):
 
 					$id_student = $value['id_estudiante'];
-				$studentData = array(
-					'id_estudiante'	=>	$value['id_estudiante'],
-					'nombre'		=>	$value['primer_apellido']." ".$value['segundo_apellido']." ".$value['primer_nombre']." ".$value['segundo_nombre'],
-					'asignaturas'	=>	array()
-
-					);
-				foreach ($tablaPuestos as $key => $data):
-
-					if($data['id_estudiante'] == $value['id_estudiante']):
-						array_push($studentData['asignaturas'],
-							array(
-								'id_asignatura'	=>	$data['id_asignatura'],
-								'asignatura'	=>	$data['Asignatura'],
-								'inasistencia'	=>	$data['Inasistencia'],
-								'order'			=>	$data['order_area'],
-								'valoracion'	=>	$data['valoracion']
-								)
-							);
-					endif;
-
-					endforeach;
-
-					array_push($resp, $studentData);
-					endif;
-
-				}
-
-				$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
-				$header = array('No.', 'NOMBRES Y APELLIDOS', 'ASIGNATURAS', 'FAA', 'VAL', 'SUP');
-
-				$path[$cont] = $dir."/".$grup.".pdf";
-
-				$pdf = new DissaproveStudentPDF('P', $unit='mm', 'Letter');
-				$pdf->TableHeader($informacionGrupo,$periodo);
-				$pdf->AddPage();
-				$pdf->FancyTable($header, $resp);
-				ob_clean();
-				$pdf->Output($path[$cont], "F");
-
-				$cont++;
-			}
-
-			return $path;
-		}
-
-
-		private function resolveDataFiltro($data=array()){
-
-			$periodo = $data['periodo'];
-			$grupo = $data['grupo'];
-			$area = $data['area'];
-			$grado = $data['grado'];
-			$reprobados = $data['reprobados'];
-			$academicas	= $data['academicas'];
-
-			$numero	= $_POST['cantidad'];
-			$operador	= $_POST['operador'];
-
-			$puestoPromedio = array();
-			$estudiantesPuestos = array();
-			$arrayGrupos = array();
-
-			$reprobadas_obj = new Reprobadas($data['db']);
-			$informacionGrupo_obj = new Institucion($_POST['db']);
-
-
-
-			if(isset($data['isGrado'])){
-				$isGrado=1;
-
-				$result = $informacionGrupo_obj->getGrupos($grado)['datos'];
-				foreach ($result as $value) {
-					array_push($arrayGrupos, $value['id_grupo']);
-				}
-
-
-			}else{
-				$isGrado = 0;
-				array_push($arrayGrupos, $grupo);
-			}
-
-			$cont=0;
-			foreach ($arrayGrupos as $grup) {
-
-
-				$dir = "doc/$grado";
-
-				if (!file_exists($dir)) {
-					mkdir($dir, 0700);
-				}
-
-				$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
-
-				if($area=="0"){
-
-					$tablaPuestos = $reprobadas_obj->getEstudiantesAsiganturasRepro($grup, $periodo, $academicas);
-					$estudiantesRepro = $reprobadas_obj->getEstudiantesRepro($grup, $periodo, $academicas, $operador, $numero);
-
-				}
-
-
-				if($area=="1")
-				{
-					$tablaPuestos = $reprobadas_obj->getEstudiantesAareasRepro($grup, $periodo, $academicas);
-					$estudiantesRepro = $reprobadas_obj->getEstudiantesReproA($grup, $periodo, $academicas, $operador, $numero);
-				}
-
-				$id_student = 0;
-				$resp = array();
-
-
-
-				foreach($estudiantesRepro as $key => $value){
-
-
-					if($id_student != $value['id_estudiante']):
-
-						$id_student = $value['id_estudiante'];
 					$studentData = array(
 						'id_estudiante'	=>	$value['id_estudiante'],
 						'nombre'		=>	$value['primer_apellido']." ".$value['segundo_apellido']." ".$value['primer_nombre']." ".$value['segundo_nombre'],
 						'asignaturas'	=>	array()
 
-						);
+					);
 					foreach ($tablaPuestos as $key => $data):
 
 						if($data['id_estudiante'] == $value['id_estudiante']):
@@ -678,37 +598,155 @@ class PDFController{
 									'inasistencia'	=>	$data['Inasistencia'],
 									'order'			=>	$data['order_area'],
 									'valoracion'	=>	$data['valoracion']
-									)
-								);
+								)
+							);
 						endif;
 
-						endforeach;
+					endforeach;
 
-						array_push($resp, $studentData);
-						endif;
+					array_push($resp, $studentData);
+				endif;
 
-					}
+			}
 
-					$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
-					$header = array('No.', 'NOMBRES Y APELLIDOS', 'ASIGNATURAS', 'FAA', 'VAL', 'SUP');
+			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
+			$header = array('No.', 'NOMBRES Y APELLIDOS', 'ASIGNATURAS', 'FAA', 'VAL', 'SUP');
 
-					$path[$cont] = $dir."/".$grup.".pdf";
+			$path[$cont] = $dir."/".$grup.".pdf";
 
-					$pdf = new DissaproveStudentPDF('P', $unit='mm', 'Letter');
-					$pdf->TableHeader($informacionGrupo,$periodo);
-					$pdf->AddPage();
-					$pdf->FancyTable($header, $resp);
-					ob_clean();
-					$pdf->Output($path[$cont], "D");
+			$pdf = new DissaproveStudentPDF('P', $unit='mm', 'Letter');
+			$pdf->TableHeader($informacionGrupo,$periodo);
+			$pdf->AddPage();
+			$pdf->FancyTable($header, $resp);
+			ob_clean();
+			$pdf->Output($path[$cont], "F");
 
-					$cont++;
-				}
+			$cont++;
+		}
 
-				return $path;
+		return $path;
+	}
+
+
+	private function resolveDataFiltro($data=array()){
+
+		$periodo = $data['periodo'];
+		$grupo = $data['grupo'];
+		$area = $data['area'];
+		$grado = $data['grado'];
+		$reprobados = $data['reprobados'];
+		$academicas	= $data['academicas'];
+
+		$numero	= $_POST['cantidad'];
+		$operador	= $_POST['operador'];
+
+		$puestoPromedio = array();
+		$estudiantesPuestos = array();
+		$arrayGrupos = array();
+
+		$reprobadas_obj = new Reprobadas($data['db']);
+		$informacionGrupo_obj = new Institucion($_POST['db']);
+
+
+
+		if(isset($data['isGrado'])){
+			$isGrado=1;
+
+			$result = $informacionGrupo_obj->getGrupos($grado)['datos'];
+			foreach ($result as $value) {
+				array_push($arrayGrupos, $value['id_grupo']);
 			}
 
 
-
-
+		}else{
+			$isGrado = 0;
+			array_push($arrayGrupos, $grupo);
 		}
-		?>
+
+		$cont=0;
+		foreach ($arrayGrupos as $grup) {
+
+
+			$dir = "doc/$grado";
+
+			if (!file_exists($dir)) {
+				mkdir($dir, 777);
+			}
+
+			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
+
+			if($area=="0"){
+
+				$tablaPuestos = $reprobadas_obj->getEstudiantesAsiganturasRepro($grup, $periodo, $academicas);
+				$estudiantesRepro = $reprobadas_obj->getEstudiantesRepro($grup, $periodo, $academicas, $operador, $numero);
+
+			}
+
+
+			if($area=="1")
+			{
+				$tablaPuestos = $reprobadas_obj->getEstudiantesAareasRepro($grup, $periodo, $academicas);
+				$estudiantesRepro = $reprobadas_obj->getEstudiantesReproA($grup, $periodo, $academicas, $operador, $numero);
+			}
+
+			$id_student = 0;
+			$resp = array();
+
+
+
+			foreach($estudiantesRepro as $key => $value){
+
+
+				if($id_student != $value['id_estudiante']):
+
+					$id_student = $value['id_estudiante'];
+					$studentData = array(
+						'id_estudiante'	=>	$value['id_estudiante'],
+						'nombre'		=>	$value['primer_apellido']." ".$value['segundo_apellido']." ".$value['primer_nombre']." ".$value['segundo_nombre'],
+						'asignaturas'	=>	array()
+
+					);
+					foreach ($tablaPuestos as $key => $data):
+
+						if($data['id_estudiante'] == $value['id_estudiante']):
+							array_push($studentData['asignaturas'],
+								array(
+									'id_asignatura'	=>	$data['id_asignatura'],
+									'asignatura'	=>	$data['Asignatura'],
+									'inasistencia'	=>	$data['Inasistencia'],
+									'order'			=>	$data['order_area'],
+									'valoracion'	=>	$data['valoracion']
+								)
+							);
+						endif;
+
+					endforeach;
+
+					array_push($resp, $studentData);
+				endif;
+
+			}
+
+			$informacionGrupo = $informacionGrupo_obj->getInformacionGrupo($grup);
+			$header = array('No.', 'NOMBRES Y APELLIDOS', 'ASIGNATURAS', 'FAA', 'VAL', 'SUP');
+
+			$path[$cont] = $dir."/".$grup.".pdf";
+
+			$pdf = new DissaproveStudentPDF('P', $unit='mm', 'Letter');
+			$pdf->TableHeader($informacionGrupo,$periodo);
+			$pdf->AddPage();
+			$pdf->FancyTable($header, $resp);
+			ob_clean();
+			$pdf->Output($path[$cont], "D");
+
+			$cont++;
+		}
+
+		return $path;
+	}
+
+
+
+
+}
+?>

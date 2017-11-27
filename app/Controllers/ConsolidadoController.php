@@ -11,19 +11,17 @@ use Model\CerrarInformeModel as CerrarInforme;
 
 
 class ConsolidadoController{
-	private $puestosPromedios_obj;
-	private $cerrarInforme_obj;
+	private $puestosPromedios_obj;	
 
-	function __construct(){
-		$db = $_SESSION['db'];
-		$this->_calcular = new Calcular($db);
-		$this->puestosPromedios_obj = new PuestosPromedios($db);
-		$this->cerrarInforme_obj = new CerrarInforme($db);
+	function __construct(){		
+		$this->puestosPromedios_obj = new PuestosPromedios();		
 	}
 
 
 	public function getConsolidadoAction($db){		
 		
+		$db = $_POST['db'];
+		$_calcular = new Calcular($db);		
 		$area = $_POST['area'];	
 		$cerrar = $_POST['cerrarInforme'];
 		$grupo = $_POST['grupo'];
@@ -74,10 +72,10 @@ class ConsolidadoController{
 		
 		$contador = 0;
 		$periodos_evaluados = [];
-		
+
 		foreach($num_periodos as $key => $_periodo){			
 
-			if($consolidado_obj->getPromediosAsiganturas($grupo, $_periodo,$academicas) != false){
+			if($consolidado_obj->getAreasEvaluadas($grupo, $_periodo,$academicas,$reprobados) != false){
 
 				$periodos_evaluados[$contador] = $_periodo;
 				if($area=="0"){
@@ -120,8 +118,11 @@ class ConsolidadoController{
 			}
 
 		}		
+
 		
-		$this->_calcular->setArraysCalcular(
+
+		
+		$_calcular->setArraysCalcular(
 			[
 				'array_datos_estudiantes_periodos' =>	$estudiantesPromedios,
 				'array_datos_estudiantes_promedios_periodos' =>	$puestoPromedio,
@@ -139,61 +140,58 @@ class ConsolidadoController{
 		);
 		
 		//Se debe conservar el orden de ejecución de cada método
-		$array_listado_estudiantes_promedios_periodos = $this->_calcular->getArrayListadoEstudiantesPromediosPeriodos();
-		$array_listado_estudiantes_evaluados = $this->_calcular->getArrayListadoEstudiantesEvaluados();
-		$cantidad_periodos_evaluados = $this->_calcular->getCantidadPeriodosEvaluados();
-		$array_promedios_acumulados = $this->_calcular->getArrayPromediosAcumulados();
-		$array_puesto_promedio_acumulado = $this->_calcular->getArrayPuestoPromedioAcumulado();
-		$array_listado_estudiantes_asignatura_periodos = $this->_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
-		$array_estudiantes_acumulados_asignaturas = $this->_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
-		$array_estudiantes_requeridas_asignaturas = $this->_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
+		$array_listado_estudiantes_promedios_periodos = $_calcular->getArrayListadoEstudiantesPromediosPeriodos();
+		$array_listado_estudiantes_evaluados = $_calcular->getArrayListadoEstudiantesEvaluados();
+		$cantidad_periodos_evaluados = $_calcular->getCantidadPeriodosEvaluados();
+		$array_promedios_acumulados = $_calcular->getArrayPromediosAcumulados();
+		$array_puesto_promedio_acumulado = $_calcular->getArrayPuestoPromedioAcumulado();
+		$array_listado_estudiantes_asignatura_periodos = $_calcular->getArrayListadoEstudiantesAsignaturasPeriodos();
+		$array_estudiantes_acumulados_asignaturas = $_calcular->getArrayListadoEstudiantesAcumuladosAsignaturasPeriodos();
+		$array_estudiantes_requeridas_asignaturas = $_calcular->getArrayListadoEstudiantesRequeridasAsignaturasPeriodos();
+		$array_periodos_evaluados = $_calcular->getArrayPeriodosEvaluados();
 		
 
 		if($cerrar == "true"){
 			
-			$this->cerrarInforme_obj->setArrayInforme(
-				[
+			$cerrarInforme_obj = new CerrarInforme(
+				[	
+					'db' => $db,
 					'array_estudiantes_acumulados_asignaturas' =>$array_estudiantes_acumulados_asignaturas,
 					'array_puesto_promedio_acumulado' =>$array_puesto_promedio_acumulado, 
 					'id_grupo' => $grupo
-				]
-			);
+				]);			
+			
+			
+			
 		}
-
+		
 		header("Access-Control-Allow-Origin: *");
+		
 		$view = new View(
 			'consolidado', 
 			'consolidado', 
 			[
 				'informe' => $informe,
-				'cantidad_periodos' => count($periodosAll),
-				'periodosAll' => $periodosAll,
-				'valoraciones' =>$valoraciones,
-				'peso_periodos' => $peso_periodos,
-				'puestoPromedio' => $puestoPromedio,
 				'isAcumulados' => $periodos_acumulados,
-				'min_bajo' => $valoraciones[1]['minimo'],
-				'tablaConsolidados' => $tablaConsolidados, 
+				'min_bajo' => $valoraciones[1]['minimo'],				 
 				'min_basico' => $valoraciones[2]['minimo'],
 				'informacionGrupo' => $informacionGrupo[0], 
-				'periodos_evaluados' => $periodos_evaluados,
+				'cantidad_periodos' => count($periodosAll),
 				'max_superior' => $valoraciones[3]['maximo'],
 				'estudiantesPromedios'=>$estudiantesPromedios,
 				'asignaturasEvaluadas' => $asignaturasEvaluadas,
-				'array_listado_estudiantes_promedios_periodos' => $array_listado_estudiantes_promedios_periodos,
-				'array_listado_estudiantes_evaluados' => $array_listado_estudiantes_evaluados,
-				'cantidad_periodos_evaluados' => $cantidad_periodos_evaluados,
+				'array_periodos_evaluados' => $array_periodos_evaluados,
 				'array_promedios_acumulados' => $array_promedios_acumulados,
+				'cantidad_periodos_evaluados' => $cantidad_periodos_evaluados,
 				'array_puesto_promedio_acumulado' => $array_puesto_promedio_acumulado,
-				'array_listado_estudiantes_asignatura_periodos' => $array_listado_estudiantes_asignatura_periodos,
+				'array_listado_estudiantes_evaluados' => $array_listado_estudiantes_evaluados,
+				'array_estudiantes_requeridas_asignaturas' => $array_estudiantes_requeridas_asignaturas, 
 				'array_estudiantes_acumulados_asignaturas' => $array_estudiantes_acumulados_asignaturas,
-				'array_estudiantes_requeridas_asignaturas' => $array_estudiantes_requeridas_asignaturas 
+				'array_listado_estudiantes_promedios_periodos' => $array_listado_estudiantes_promedios_periodos,
+				'array_listado_estudiantes_asignatura_periodos' => $array_listado_estudiantes_asignatura_periodos
 			]);
 
-		$view->execute();
-
-		
-
+		$view->execute();		
 
 	}
 
